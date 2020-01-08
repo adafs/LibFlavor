@@ -1,0 +1,61 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+        flavorDimensions dimensions.lib1
+    }
+
+    productFlavors {
+
+        lib1_pro {
+            dimension dimensions.lib1
+            // 第一个参数为依赖库的flavorDimensions，
+            // 第二个参数为选中这个flavor后，依赖库的默认flavor
+            // 后面的参数也需要，不要的话，修改为非默认的flavor会出现问题
+            missingDimensionStrategy dimensions.lib2, "lib2_pro", "lib2_dev", "lib2_online"
+        }
+
+
+        lib1_dev {
+            dimension dimensions.lib1
+            missingDimensionStrategy dimensions.lib2, "lib2_dev", "lib2_pro", "lib2_online"
+        }
+
+
+        lib1_online {
+            dimension dimensions.lib1
+            missingDimensionStrategy dimensions.lib2, "lib2_online", "lib2_pro", "lib2_dev"
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation project(path: ':lib2')
+}

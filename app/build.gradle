@@ -1,0 +1,54 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.adafs.libflavor"
+        minSdkVersion 15
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        flavorDimensions dimensions.app
+    }
+
+    productFlavors {
+
+        pro {
+            // 第一个参数为依赖库的flavorDimensions，
+            // 第二个参数为选中这个flavor后，依赖库的默认flavor
+            // 后面的参数也需要，不要的话，修改为非默认的flavor会出现问题
+            missingDimensionStrategy dimensions.lib1, "lib1_pro", "lib1_dev", "lib1_online"
+        }
+
+
+        dev {
+            missingDimensionStrategy dimensions.lib1, "lib1_dev", "lib1_pro", "lib1_online"
+        }
+
+
+        online {
+            missingDimensionStrategy dimensions.lib1, "lib1_online", "lib1_pro", "lib1_dev"
+        }
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation project(path: ':lib1')
+}
